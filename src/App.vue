@@ -5,7 +5,6 @@
       typeof weather.main != 'undefined' && weather.main.temp > 16 ? 'warm' : ''
     "
   >
-    <pre>{{ weatherForecast(coord) }}</pre>
     <main>
       <div class="header">
         <div>{{ currentTime.hour }}</div>
@@ -38,6 +37,9 @@
             <div class="temp-max">{{ weather.main.temp_max.toFixed(0) }}°c</div>
             <div class="temp-min">{{ weather.main.temp_min.toFixed(0) }}°c</div>
           </div>
+        </div>
+        <div class="five-days">
+          <pre>{{ weatherForecast(coord) }}</pre>
         </div>
         <div class="information">
           <ul>
@@ -111,9 +113,9 @@ export default {
     timesStamp() {
       if (typeof this.weather.main != "undefined") {
         const sunrise = fromUnixTime(this.weather.sys.sunrise);
-        const sunriseHour = format(sunrise, "p").split(" ")[0];
+        const sunriseHour = sunrise.toTimeString().slice(0, 5);
         const sunset = fromUnixTime(this.weather.sys.sunset);
-        const sunsetHour = format(sunset, "p").split(" ")[0];
+        const sunsetHour = sunset.toTimeString().slice(0, 5);
         return { sunrise: sunriseHour, sunset: sunsetHour };
       }
       return null;
@@ -149,12 +151,19 @@ export default {
     },
     weatherForecast(date) {
       if (typeof this.weather.main != "undefined") {
-        console.log(date.list.map((i) => i.dt_txt));
-        const dates = date.list.map((i) => i.dt_txt.split(" ")[0]);
-        const removeRepeated = [...new Set(dates)]
-        // const dateFilter = dates.filter((x, y) => dates.indexOf(y) === x)
-        // return dateFilter
-        return removeRepeated
+        const items = date.list.map((i) => i.dt_txt);
+        for (let item in items) {
+          const hourInitial = items[item].split(" ")[1];
+          if (hourInitial === "00:00:00") {
+            const weekday = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+            const formatDay = new Date(items[item])
+            return weekday[formatDay.getDay()];
+          }
+          return items
+        }
+        // const dates = date.list.map((i) => i.dt_txt.split(" ")[0]);
+        // const removeRepeated = [...new Set(dates)];
+        // return removeRepeated;
       }
       return "";
     },
