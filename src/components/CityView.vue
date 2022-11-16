@@ -5,6 +5,7 @@
 <script>
 export default {
   name: "CityView",
+  props: ['city']
 }
 </script>
 
