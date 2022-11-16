@@ -1,24 +1,25 @@
 <template>
   <div class="main">
-    <NavigationView class="navigation" />
-    <router-view />
+    <NavigationView />
+    <AddCity v-bind:cities="cities" />
+    <!-- <router-view v-bind:cities="cities" /> -->
   </div>
 </template>
 
 <script>
-// import AddCity from "./views/AddCity.vue"
 import axios from "axios";
 import db from "./firebase/firebase";
-import NavigationView from "./components/NavigationView.vue"
+import AddCity from "./views/AddCity.vue";
+import NavigationView from "./components/NavigationView.vue";
 export default {
   name: "App",
   components: {
-    NavigationView
+    AddCity,
+    NavigationView,
   },
   data() {
     return {
       APIkey: "b33558d4f7c88ec48792d8f1e0f09c62",
-      city: "Detroit",
       cities: [],
     };
   },
@@ -30,19 +31,22 @@ export default {
       let firebaseDB = db.collection("cities");
       firebaseDB.onSnapshot((snap) => {
         snap.docChanges().forEach(async (doc) => {
-          if(doc.type === 'added') {
+          if (doc.type === "added") {
             try {
               const response = await axios.get(
-                `https://api.openweathermap.org/data/2.5/weather?q=${doc.doc.data().city}&units=imperial&APPID=${this.APIkey}`
+                `https://api.openweathermap.org/data/2.5/weather?q=${
+                  doc.doc.data().city
+                }&units=imperial&APPID=${this.APIkey}`
               );
               const data = response.data;
-              firebaseDB.doc(doc.doc.id).update({
-                currentWeather: data,
-              }).then(() => {
-                this.cities.push(doc.doc.data());
-              }).then(() => {
-                console.log("1", this.cities);
-              })
+              firebaseDB
+                .doc(doc.doc.id)
+                .update({
+                  currentWeather: data,
+                })
+                .then(() => {
+                  this.cities.push(doc.doc.data());
+                });
             } catch (err) {
               console.log(err);
             }
@@ -63,14 +67,9 @@ export default {
 }
 
 .main {
+  max-width: 1024px;
+  margin: 0 auto;
   height: 100vh;
-  .navigation {
-    z-index: 99;
-    position: fixed;
-    max-width: 1024px;
-    width: 100%;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  }
 }
 
 .container {
