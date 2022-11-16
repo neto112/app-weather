@@ -1,8 +1,8 @@
 <template>
   <div class="main">
     <Modal v-if="modalOpen" @close-modal="toggleModal" :APIkey="APIkey" />
-    <NavigationView @add-city="toggleModal" />
-    <AddCity :cities="cities" />
+    <NavigationView @add-city="toggleModal" @edit-city="toggleEdit" />
+    <AddCity :cities="cities" :edit="edit" />
     <!-- <router-view v-bind:cities="cities" /> -->
   </div>
 </template>
@@ -25,6 +25,7 @@ export default {
       APIkey: "b33558d4f7c88ec48792d8f1e0f09c62",
       cities: [],
       modalOpen: null,
+      edit: null,
     };
   },
   created() {
@@ -56,12 +57,19 @@ export default {
             }
           } else if (doc.type === "added" && doc.doc.Nd) {
             this.cities.push(doc.doc.data());
+          } else if (doc.type === "removed") {
+            this.cities = this.cities.filter((city) => {
+              city.city !== doc.doc.data().city;
+            });
           }
         });
       });
     },
     toggleModal() {
       this.modalOpen = !this.modalOpen;
+    },
+    toggleEdit() {
+      this.edit = !this.edit;
     },
   },
 };
@@ -79,9 +87,9 @@ export default {
   max-width: 1024px;
   margin: 0 auto;
   height: 100vh;
-}
-
-.container {
-  padding: 0 20px;
+  
+  .container {
+    padding: 0 20px;
+  }
 }
 </style>
