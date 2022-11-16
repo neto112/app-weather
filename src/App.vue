@@ -12,7 +12,7 @@ import axios from "axios";
 import db from "./firebase/firebase";
 import AddCity from "./views/AddCity.vue";
 import NavigationView from "./components/NavigationView.vue";
-import Modal from "./components/Modal.vue"
+import Modal from "./components/Modal.vue";
 export default {
   name: "App",
   components: {
@@ -35,7 +35,7 @@ export default {
       let firebaseDB = db.collection("cities");
       firebaseDB.onSnapshot((snap) => {
         snap.docChanges().forEach(async (doc) => {
-          if (doc.type === "added") {
+          if (doc.type === "added" && !doc.doc.Nd) {
             try {
               const response = await axios.get(
                 `https://api.openweathermap.org/data/2.5/weather?q=${
@@ -54,13 +54,15 @@ export default {
             } catch (err) {
               console.log(err);
             }
+          } else if (doc.type === "added" && doc.doc.Nd) {
+            this.cities.push(doc.doc.data());
           }
         });
       });
     },
     toggleModal() {
-      this.modalOpen = !this.modalOpen
-    }
+      this.modalOpen = !this.modalOpen;
+    },
   },
 };
 </script>
