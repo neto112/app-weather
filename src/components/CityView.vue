@@ -2,7 +2,7 @@
   <div class="city">
     <span>{{ this.city.city }}</span>
     <div class="weather">
-      <span>{{ Math.round(this.city.currentWeather.main.temp) }}&deg;</span>
+      <span>{{ temperature }}&deg;</span>
       <img
         :src="
           require(`../../public/conditions/${this.city.currentWeather.weather[0].icon}.svg`)
@@ -28,9 +28,13 @@
 export default {
   name: "CityView",
   props: ["city"],
-  created() {
-    console.log("***", this.city);
-  },
+  computed: {
+    temperature() {
+      const fahrenheit = this.city.currentWeather.main.temp
+      const celsius = (fahrenheit-32)/1.8
+      return Math.round(celsius)
+    }
+  }
 };
 </script>
 
