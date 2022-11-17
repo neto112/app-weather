@@ -39,9 +39,9 @@ export default {
           if (doc.type === "added" && !doc.doc.Nd) {
             try {
               const response = await axios.get(
-                `https://api.openweathermap.org/data/2.5/weather?q=${
-                  doc.doc.data().city
-                }&units=imperial&APPID=${this.APIkey}`
+                `https://api.openweathermap.org/data/2.5/weather?q=${doc.doc.data().city}&units=imperial&APPID=${
+                  this.APIkey
+                }`
               );
               const data = response.data;
               firebaseDB
@@ -58,9 +58,7 @@ export default {
           } else if (doc.type === "added" && doc.doc.Nd) {
             this.cities.push(doc.doc.data());
           } else if (doc.type === "removed") {
-            this.cities = this.cities.filter((city) => {
-              city.city !== doc.doc.data().city;
-            });
+            this.cities = this.cities.filter((city) => city.city !== doc.doc.data().city);
           }
         });
       });
