@@ -1,8 +1,21 @@
 <template>
   <div class="main">
     <Modal v-if="modalOpen" @close-modal="toggleModal" :APIkey="APIkey" />
-    <NavigationView @add-city="toggleModal" @edit-city="toggleEdit" />
-    <router-view :cities="cities" :edit="edit" :APIkey="APIkey" />
+    <NavigationView
+      @add-city="toggleModal"
+      @edit-city="toggleEdit"
+      :addCityActive="addCityActive"
+      :isDay="isDay"
+      :isNight="isNight"
+    />
+    <router-view
+      :cities="cities"
+      :edit="edit"
+      :APIkey="APIkey"
+      @is-day="dayTime"
+      @is-night="nightTime"
+      @resetDays="resetDays"
+    />
   </div>
 </template>
 
@@ -19,10 +32,13 @@ export default {
   },
   data() {
     return {
+      isDay: null,
+      isNight: null,
       APIkey: "339d698f17ac0be62378718a872f23c1",
       cities: [],
       modalOpen: null,
       edit: null,
+      addCityActive: null,
     };
   },
   created() {
@@ -36,9 +52,9 @@ export default {
           if (doc.type === "added" && !doc.doc.Nd) {
             try {
               const response = await axios.get(
-                `https://api.openweathermap.org/data/2.5/weather?q=${doc.doc.data().city}&units=imperial&APPID=${
-                  this.APIkey
-                }`
+                `https://api.openweathermap.org/data/2.5/weather?q=${
+                  doc.doc.data().city
+                }&units=imperial&APPID=${this.APIkey}`
               );
               const data = response.data;
               firebaseDB
@@ -55,7 +71,9 @@ export default {
           } else if (doc.type === "added" && doc.doc.Nd) {
             this.cities.push(doc.doc.data());
           } else if (doc.type === "removed") {
-            this.cities = this.cities.filter((city) => city.city !== doc.doc.data().city);
+            this.cities = this.cities.filter(
+              (city) => city.city !== doc.doc.data().city
+            );
           }
         });
       });
@@ -65,6 +83,28 @@ export default {
     },
     toggleEdit() {
       this.edit = !this.edit;
+    },
+    checkRoute() {
+      if (this.$route.name === "AddCity") {
+        this.addCityActive = true;
+      } else {
+        this.addCityActive = false;
+      }
+    },
+    dayTime() {
+      this.isDay = !this.isDay;
+    },
+    nightTime() {
+      this.isNight = !this.isNight;
+    },
+    resetDays() {
+      this.isDay = false;
+      this.isNight = false;
+    },
+  },
+  watch: {
+    $route() {
+      this.checkRoute();
     },
   },
 };

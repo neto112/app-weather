@@ -18,6 +18,9 @@ export default {
   created() {
     this.getWeather();
   },
+  beforeDetroy() {
+    this.$emit("reset")
+  },
   methods: {
     getWeather() {
       db.collection("cities")
@@ -30,9 +33,7 @@ export default {
               .get(
                 `https://api.openweathermap.org/data/2.5/onecall?lat=${
                   doc.data().currentWeather.coord.lat
-                }&lon=${
-                  doc.data().currentWeather.coord.lon
-                }&appid=${
+                }&lon=${doc.data().currentWeather.coord.lon}&appid=${
                   this.APIkey
                 }`
               )
@@ -41,11 +42,23 @@ export default {
               })
               .then(() => {
                 this.loading = false;
-                console.log(this.forecast);
-                console.log(this.currentWeather);
+                this.getCurrentTime();
               });
           });
         });
+    },
+    getCurrentTime() {
+      const dateObject = new Date();
+      this.currentTime = dateObject.getHours();
+      const sunrise = new Date(
+        this.currentWeather.sys.sunrise * 1000
+      ).getHours();
+      const sunset = new Date(this.currentWeather.sys.sunset * 1000).getHours();
+      if (this.currentTime > sunrise && this.currentTime < sunset) {
+        this.$emit("is-day");
+      } else {
+        this.$emit("is-night");
+      }
     },
   },
 };
