@@ -2,7 +2,7 @@
   <div class="main">
     <Modal v-if="modalOpen" @close-modal="toggleModal" :APIkey="APIkey" />
     <NavigationView @add-city="toggleModal" @edit-city="toggleEdit" />
-    <router-view :cities="cities" :edit="edit" />
+    <router-view :cities="cities" :edit="edit" :APIkey="APIkey" />
   </div>
 </template>
 
@@ -19,7 +19,7 @@ export default {
   },
   data() {
     return {
-      APIkey: "b33558d4f7c88ec48792d8f1e0f09c62",
+      APIkey: "339d698f17ac0be62378718a872f23c1",
       cities: [],
       modalOpen: null,
       edit: null,

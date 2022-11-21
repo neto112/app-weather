@@ -1,5 +1,5 @@
 <template>
-  <div class="city">
+  <div class="city" @click="goToWeather">
     <i v-if="edit" @click="removeCity" class="far fa-trash-alt edit" ref="edit"></i>
     <span>{{ this.city.city }}</span>
     <div class="weather">
@@ -45,7 +45,14 @@ export default {
       .then(() => {
         db.collection('cities').doc(this.id).delete()
       })
-    }
+    },
+    goToWeather(e) {
+      if (e.target === this.$refs.edit) {
+        //
+      } else {
+        this.$router.push({ name: "WeatherView", params: { city: this.city.city }})
+      }
+    },
   },
   computed: {
     temperature() {
