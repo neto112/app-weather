@@ -1,8 +1,6 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
+import { createRouter, createWebHistory } from 'vue-router'
 import AddCity from "../views/AddCity.vue";
-
-Vue.use(VueRouter);
+import WeatherView from "../views/WeatherView.vue"
 
 const routes = [
   {
@@ -10,12 +8,15 @@ const routes = [
     name: "AddCity",
     component: AddCity,
   },
+  {
+    path: "/weather/:city",
+    name: "WeatherView",
+    component: WeatherView,
+  },
 ];
+const router = createRouter({
+  history: createWebHistory(process.env.BASE_URL),
+  routes
+})
 
-const router = new VueRouter({
-  mode: "history",
-  base: process.env.BASE_URL,
-  routes,
-});
-
-export default router;
+export default router

@@ -2,21 +2,18 @@
   <div class="main">
     <Modal v-if="modalOpen" @close-modal="toggleModal" :APIkey="APIkey" />
     <NavigationView @add-city="toggleModal" @edit-city="toggleEdit" />
-    <AddCity :cities="cities" :edit="edit" />
-    <!-- <router-view v-bind:cities="cities" /> -->
+    <router-view :cities="cities" :edit="edit" />
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import db from "./firebase/firebase";
-import AddCity from "./views/AddCity.vue";
 import NavigationView from "./components/NavigationView.vue";
 import Modal from "./components/Modal.vue";
 export default {
   name: "App",
   components: {
-    AddCity,
     Modal,
     NavigationView,
   },
@@ -87,7 +84,7 @@ export default {
   max-width: 1024px;
   margin: 0 auto;
   height: 100vh;
-  
+
   .container {
     padding: 0 20px;
   }
