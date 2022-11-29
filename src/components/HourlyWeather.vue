@@ -21,7 +21,7 @@ export default {
   },
   computed: {
     filteredList() {
-      return this.forecast.hourly.slice(0, 23);
+      return this.forecast.hourly.slice(1, 25);
     },
   },
 };

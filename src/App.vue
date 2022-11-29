@@ -1,6 +1,12 @@
 <template>
-  <div class="main">
-    <Modal v-if="modalOpen" @close-modal="toggleModal" :APIkey="APIkey" />
+  <div v-if="isLoading" class="loading"></div>
+  <div v-else class="app">
+    <Modal
+      v-if="modalOpen"
+      @close-modal="toggleModal"
+      :APIkey="APIkey"
+      :cities="cities"
+    />
     <NavigationView
       @add-city="toggleModal"
       @edit-city="toggleEdit"
@@ -17,6 +23,7 @@
       @is-day="dayTime"
       @is-night="nightTime"
       @resetDays="resetDays"
+      @add-city="toggleModal"
     />
   </div>
 </template>
@@ -41,6 +48,7 @@ export default {
       modalOpen: null,
       edit: null,
       addCityActive: null,
+      isLoading: true,
     };
   },
   created() {
@@ -52,6 +60,9 @@ export default {
       let firebaseDB = db.collection("cities");
 
       firebaseDB.onSnapshot((snap) => {
+        if (snap.docs.length === 0) {
+          this.isLoading = false;
+        }
         snap.docChanges().forEach(async (doc) => {
           if (doc.type === "added" && !doc.doc.Nd) {
             try {
@@ -68,6 +79,7 @@ export default {
                 })
                 .then(() => {
                   this.cities.push(doc.doc.data());
+                  this.isLoading = false;
                 });
             } catch (err) {
               console.log(err);
@@ -75,7 +87,9 @@ export default {
           } else if (doc.type === "added" && doc.doc.Nd) {
             this.cities.push(doc.doc.data());
           } else if (doc.type === "removed") {
-            this.cities = this.cities.filter((city) => city.city !== doc.doc.data().city);
+            this.cities = this.cities.filter(
+              (city) => city.city !== doc.doc.data().city
+            );
           }
         });
       });
@@ -141,6 +155,29 @@ export default {
 
   .container {
     padding: 0 20px;
+  }
+}
+
+.loading {
+  @keyframes spin {
+    to {
+      transform: rotateZ(360deg);
+    }
+  }
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  span {
+    display: block;
+    width: 60px;
+    height: 60px;
+    margin: 0 auto;
+    border: 2px solid transparent;
+    border-top-color: #142a5f;
+    border-radius: 50%;
+    animation: spin ease 1000ms infinite;
   }
 }
 </style>

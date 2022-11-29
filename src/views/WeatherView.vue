@@ -8,6 +8,7 @@
         <CurrentWeather :isDay="isDay" :isNight="isNight" :currentWeather="currentWeather" />
         <HourlyWeather :forecast="forecast" />
         <WeeklyForecast :forecast="forecast" />
+        <AdditionalInfo />
       </div>
     </div>
   </div>
@@ -16,6 +17,7 @@
 <script>
 import axios from "axios";
 import db from "../firebase/firebase";
+import AdditionalInfo from "../components/AdditionalInfo.vue"
 import CurrentWeather from "../components/CurrentWeather.vue"
 import HourlyWeather from "../components/HourlyWeather.vue"
 import WeeklyForecast from '../components/WeeklyForecast.vue';
@@ -23,6 +25,7 @@ export default {
   name: "WeatherView",
   props: ["APIkey", "isDay", "isNight"],
   components: {
+    AdditionalInfo,
     CurrentWeather,
     HourlyWeather,
     WeeklyForecast,
@@ -81,28 +84,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.loading {
-  @keyframes spin {
-    to {
-      transform: rotateZ(360deg);
-    }
-  }
-  display: flex;
-  height: 100%;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
-  span {
-    display: block;
-    width: 60px;
-    height: 60px;
-    margin: 0 auto;
-    border: 2px solid transparent;
-    border-top-color: #142a5f;
-    border-radius: 50%;
-    animation: spin ease 1000ms infinite;
-  }
-}
 .weather {
   transition: 500ms ease;
   overflow: scroll;

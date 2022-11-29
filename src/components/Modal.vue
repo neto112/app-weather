@@ -18,7 +18,7 @@ import axios from "axios";
 import db from "../firebase/firebase";
 export default {
   name: "ModalView",
-  props: ["APIkey"],
+  props: ["APIkey", "cities"],
   data() {
     return {
       city: "",
@@ -33,17 +33,26 @@ export default {
     async addCity() {
       if (this.city === "") {
         alert("field cannot be empty");
+      } else if (this.cities.some((res) => res.city === this.city.toLowerCase())) {
+        alert(`${this.city} already exists!`);
       } else {
-        const res = await axios.get(
-          `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=imperial&APPID=${this.APIkey}`
-        );
-        const data = await res.data;
-        db.collection("cities").doc().set({
-          city: this.city,
-          currentWeather: data,
-        }).then(() => {
-          this.$emit("close-modal")
-        });
+        try {
+          const res = await axios.get(
+            `https://api.openweathermap.org/data/2.5/weather?q=${this.city}&units=imperial&APPID=${this.APIkey}`
+          );
+          const data = await res.data;
+          db.collection("cities")
+            .doc()
+            .set({
+              city: this.city.toLowerCase(),
+              currentWeather: data,
+            })
+            .then(() => {
+              this.$emit("close-modal");
+            });
+        } catch {
+          alert(`${this.city} does not exist, please try again!`);
+        }
       }
     },
   },
