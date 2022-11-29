@@ -8,7 +8,7 @@
         <CurrentWeather :isDay="isDay" :isNight="isNight" :currentWeather="currentWeather" />
         <HourlyWeather :forecast="forecast" />
         <WeeklyForecast :forecast="forecast" />
-        <AdditionalInfo />
+        <AdditionalInfo :currentWeather="currentWeather" />
       </div>
     </div>
   </div>
@@ -42,7 +42,7 @@ export default {
     this.getWeather();
   },
   beforeDetroy() {
-    this.$emit("reset")
+    this.$emit("resetDays")
   },
   methods: {
     getWeather() {

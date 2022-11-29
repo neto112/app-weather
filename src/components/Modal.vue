@@ -2,12 +2,7 @@
   <div @click="closeModal" class="modal" ref="modal">
     <div class="modal-wrap" ref="modalWrap">
       <label for="city-name">Enter Location:</label>
-      <input
-        type="text"
-        name="city-name"
-        placeholder="Search By City Name"
-        v-model="city"
-      />
+      <input type="text" name="city-name" placeholder="Search By City Name" v-model="city"/>
       <button @click="addCity">Add</button>
     </div>
   </div>

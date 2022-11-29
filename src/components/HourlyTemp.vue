@@ -4,7 +4,7 @@
     <span>
       <img :src="require(`../../public/conditions/${this.time.weather[0].icon}.svg`)" alt="" />
     </span>
-    <span>{{Math.round(this.time.temp)}}</span>
+    <span>{{Math.round(this.time.temp)}}&deg;</span>
   </div>
 </template>
 
