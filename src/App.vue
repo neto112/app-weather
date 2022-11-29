@@ -45,10 +45,12 @@ export default {
   },
   created() {
     this.getCityWeather();
+    this.checkRoute();
   },
   methods: {
     getCityWeather() {
       let firebaseDB = db.collection("cities");
+
       firebaseDB.onSnapshot((snap) => {
         snap.docChanges().forEach(async (doc) => {
           if (doc.type === "added" && !doc.doc.Nd) {
@@ -73,9 +75,7 @@ export default {
           } else if (doc.type === "added" && doc.doc.Nd) {
             this.cities.push(doc.doc.data());
           } else if (doc.type === "removed") {
-            this.cities = this.cities.filter(
-              (city) => city.city !== doc.doc.data().city
-            );
+            this.cities = this.cities.filter((city) => city.city !== doc.doc.data().city);
           }
         });
       });

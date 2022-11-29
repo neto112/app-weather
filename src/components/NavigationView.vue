@@ -10,16 +10,16 @@
         </div>
       </nav>
     </header>
-    <header v-else class="container">
+    <header v-else class="container" :class="{ day: isDay, night: isNight }">
       <nav>
         <router-link class="router-link" :to="{ name: 'AddCity' }">
           <i class="fas fa-plus"></i>
         </router-link>
-        <span>
-          {{ new Date().toLocaleString("en-us", { weekday: "short" }) }},
-          {{ new Date().toLocaleString("en-us", { month: "short" }) }},
-          {{ new Date().toLocaleString("en-us", { day: "2-digit" }) }},
-        </span>
+        <span
+          >{{ new Date().toLocaleString("en-us", { weekday: "short" }) }},
+          {{ new Date().toLocaleString("en-us", { month: "short" }) }}
+          {{ new Date().toLocaleString("en-us", { day: "2-digit" }) }}</span
+        >
         <span>&deg; F</span>
       </nav>
     </header>

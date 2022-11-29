@@ -6,6 +6,7 @@
     <div v-else class="weather" :class="{ day: isDay, night: isNight }">
       <div class="weather-wrap">
         <CurrentWeather :isDay="isDay" :isNight="isNight" :currentWeather="currentWeather" />
+        <HourlyWeather :forecast="forecast" />
       </div>
     </div>
   </div>
@@ -15,11 +16,13 @@
 import axios from "axios";
 import db from "../firebase/firebase";
 import CurrentWeather from "../components/CurrentWeather.vue"
+import HourlyWeather from "../components/HourlyWeather.vue"
 export default {
   name: "WeatherView",
   props: ["APIkey", "isDay", "isNight"],
   components: {
-    CurrentWeather
+    CurrentWeather,
+    HourlyWeather,
   },
   data() {
     return {
@@ -45,11 +48,9 @@ export default {
             this.currentWeather = doc.data().currentWeather;
             axios
               .get(
-                `https://api.openweathermap.org/data/2.5/onecall?lat=${
-                  doc.data().currentWeather.coord.lat
-                }&lon=${doc.data().currentWeather.coord.lon}&appid=${
-                  this.APIkey
-                }`
+                `https://api.openweathermap.org/data/2.5/onecall?lat=${doc.data().currentWeather.coord.lat}&lon=${
+                  doc.data().currentWeather.coord.lon
+                }&exclude=current,minutley,alerts&units=imperial&appid=${this.APIkey}`
               )
               .then((res) => {
                 this.forecast = res.data;
@@ -64,9 +65,7 @@ export default {
     getCurrentTime() {
       const dateObject = new Date();
       this.currentTime = dateObject.getHours();
-      const sunrise = new Date(
-        this.currentWeather.sys.sunrise * 1000
-      ).getHours();
+      const sunrise = new Date(this.currentWeather.sys.sunrise * 1000).getHours();
       const sunset = new Date(this.currentWeather.sys.sunset * 1000).getHours();
       if (this.currentTime > sunrise && this.currentTime < sunset) {
         this.$emit("is-day");
