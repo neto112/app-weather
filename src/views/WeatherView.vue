@@ -7,6 +7,7 @@
       <div class="weather-wrap">
         <CurrentWeather :isDay="isDay" :isNight="isNight" :currentWeather="currentWeather" />
         <HourlyWeather :forecast="forecast" />
+        <WeeklyForecast :forecast="forecast" />
       </div>
     </div>
   </div>
@@ -17,12 +18,14 @@ import axios from "axios";
 import db from "../firebase/firebase";
 import CurrentWeather from "../components/CurrentWeather.vue"
 import HourlyWeather from "../components/HourlyWeather.vue"
+import WeeklyForecast from '../components/WeeklyForecast.vue';
 export default {
   name: "WeatherView",
   props: ["APIkey", "isDay", "isNight"],
   components: {
     CurrentWeather,
     HourlyWeather,
+    WeeklyForecast,
   },
   data() {
     return {
